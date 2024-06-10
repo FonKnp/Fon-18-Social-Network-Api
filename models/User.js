@@ -8,18 +8,21 @@ const userSchema = new Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
       match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please try a valid email'],
     },
+
     thoughts: [
         {
         type: Schema.Types.ObjectId,
         ref: 'thought',
       },
     ],
+
     friends: [
         {
         type: Schema.Types.ObjectId,
@@ -41,6 +44,6 @@ userSchema
   return this.friend.length;
 });
 
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exportd = User;
