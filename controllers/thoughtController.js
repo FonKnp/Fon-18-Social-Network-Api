@@ -1,4 +1,4 @@
-const { Thought, User } = require('../models');
+const { Thought, User, Reaction } = require('../models');
 
 module.exports = {
   // get all thoughts
@@ -36,16 +36,17 @@ module.exports = {
   // Update thought
   async updateThought(req, res) {
     try {
-      const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
-        { $set: req.body },
-        { runValidators: true, new: true }
+      const thought = await Thought.findByIdAndUpdate(
+        req.params.thoughtId,
+        req.body,
+        {
+          new: true,
+        }
       );
 
       if (!thought) {
         res.status(404).json({ message: 'No thought with this Id!' });
       }
-
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
@@ -75,14 +76,33 @@ module.exports = {
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $addToSet: { reactions: req.body }},
-        { new: true }
-      )
+        { runValidators: true, new: true }
+      );
       if (!thought) {
         res.status(404).json({ message: 'No thought with this Id!' });
       }
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
+    }
+  },
+  // Update reaction
+  async updateReaction(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        {
+          _id: req.params.thoughtId,
+          "reactions.reactionId": req.params.reactionId,
+        },
+        { $set: { "reactions.$.reactionBody": req.body.reactionBody } },
+        { runValidators: true, new: true }
+      );
+
+      thought
+        ? res.json(thought)
+        : res.status(404).json({ message: "Reaction not found" });
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
   // Delete reaction

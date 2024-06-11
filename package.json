@@ -1,0 +1,19 @@
+{
+  "name": "fon-18-social-network-api",
+  "version": "1.0.0",
+  "description": "Back-end for social network where user post thoughts, react to thoughts, and add friends to each other.\r This challenge help me learn about MongoDB. I learn about the best practice with the MVC framework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
