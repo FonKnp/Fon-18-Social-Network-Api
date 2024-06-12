@@ -8,6 +8,7 @@ module.exports = {
       const userData = await User.find();
       res.json(userData);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
@@ -49,7 +50,7 @@ module.exports = {
     }
   },
   // Delete user
-  async deleteUserById({ params }, res) {
+  async deleteUser(req, res) {
     try {
       const userData = await User.findOneAndDelete({ _id: params.userId });
       if (!userData) {

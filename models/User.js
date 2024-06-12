@@ -46,4 +46,4 @@ userSchema
 
 const User = model('User', userSchema);
 
-module.exportd = User;
+module.exports = User;
