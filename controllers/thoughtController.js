@@ -117,18 +117,18 @@ module.exports = {
     try {
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
-            { $pull: { reactions: { reactionId: req.params.reactionId } } },
-            { new: true } // Return the updated document
-        );
+        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { new: true } // Return the updated document
+      );
 
-        if (!thought) {
-            return res.status(404).json({ message: 'No thought with this Id!' });
-        }
+      if (!thought) {
+          return res.status(404).json({ message: 'No thought with this Id!' });
+      }
 
-        res.json(thought);
+      res.json({ message: 'Deleted reaction successfully!'});
     } catch (err) {
-        console.error(err);
-        res.status(500).json(err);
+      console.error(err);
+      res.status(500).json(err);
     }
   },
 };
