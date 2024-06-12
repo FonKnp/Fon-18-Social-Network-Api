@@ -73,51 +73,62 @@ module.exports = {
   // Create reaction
   async createReaction(req, res) {
     try {
-      const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
-        { $addToSet: { reactions: req.body }},
-        { runValidators: true, new: true }
-      );
-      if (!thought) {
-        res.status(404).json({ message: 'No thought with this Id!' });
-      }
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json(err);
-    }
-  },
-  // Update reaction
-  async updateReaction(req, res) {
-    try {
-      const thought = await Thought.findOneAndUpdate(
-        {
-          _id: req.params.thoughtId,
-          "reactions.reactionId": req.params.reactionId,
-        },
-        { $set: { "reactions.$.reactionBody": req.body.reactionBody } },
-        { runValidators: true, new: true }
+      const thoughtId = req.params.thoughtId;
+      const reaction = req.body;
+
+      // Assuming Thought is a Mongoose model
+      const updatedThought = await Thought.findOneAndUpdate(
+          { _id: thoughtId },
+          { $push: { reactions: reaction } },
+          { new: true }
       );
 
-      thought
-        ? res.json(thought)
-        : res.status(404).json({ message: "Reaction not found" });
+      if (!updatedThought) {
+          return res.status(404).json({ message: 'No thought found with this id!' });
+      }
+
+      res.json(updatedThought);
     } catch (err) {
-      res.status(500).json(err);
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
     }
   },
+  // // Update reaction
+  // async updateReaction(req, res) {
+  //   try {
+  //     const thought = await Reaction.findOneAndUpdate(
+  //       {
+  //         _id: req.params.thoughtId,
+  //         "reactions.reactionId": req.params.reactionId,
+  //       },
+  //       { $set: { "reactions.$.reactionBody": req.body.reactionBody } },
+  //       { runValidators: true, new: true }
+  //     );
+
+  //     thought
+  //       ? res.json(thought)
+  //       : res.status(404).json({ message: "Reaction not found" });
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
   // Delete reaction
   async deleteReaction(req, res) {
     try {
-      const thought = await Thought.findOneAndDelete(
+      const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
-        { $pull: { reactions: { reactionId: req.params.reactionId} }}
-      )
-      if (!thought) {
-        res.status(404).json({ message: 'No thought with this Id!' });
-      }
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            { new: true } // Return the updated document
+        );
+
+        if (!thought) {
+            return res.status(404).json({ message: 'No thought with this Id!' });
+        }
+
+        res.json(thought);
     } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+        console.error(err);
+        res.status(500).json(err);
     }
-  }
+  },
 };

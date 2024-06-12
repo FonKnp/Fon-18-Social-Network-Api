@@ -15,12 +15,13 @@ module.exports = {
   // Get user by Id
   async getUserById(req, res) {
     try {
-      const userData = await User.findOne({ _id: params.userId });
+      const userData = await User.findOne({ _id: req.params.userId });
       if (!userData) {
         return res.status(404).json({ message: 'No user found with this Id!' });
       }
       return res.json(userData);
     } catch (err) {
+      console.log(err);
       return res.status(500).json(err);
     }
   },
@@ -52,7 +53,7 @@ module.exports = {
   // Delete user
   async deleteUser(req, res) {
     try {
-      const userData = await User.findOneAndDelete({ _id: params.userId });
+      const userData = await User.findOneAndDelete({ _id: req.params.userId });
       if (!userData) {
         res.status(404).json({ message: "No user found with this id!" });
         return;
@@ -67,8 +68,7 @@ module.exports = {
     try {
       const userData = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { friends: req.params.friendId }},
-        { new: true }
+        { $addToSet: { friends: req.params.friendId }}
       );
       if (!userData) {
         res.status(404).json({ message: 'No user found with thid Id!'});
@@ -84,19 +84,19 @@ module.exports = {
     try {
       const userData = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { friends: req.params.friendId }},
-        { new: true }
+        { $pull: { friends: req.params.friendId }}
       );
       if (!userData) {
         return res.status(404).json({ message: 'No user with this Id!' });
       }
-      const deleted = userData.friends.indexOf(params.friendId) === -1;
+      // const deleted = userData.friends.indexOf(params.friendId) === -1;
 
-      if (deleted) {
-        res.json({ message: 'Successfully deleted friend!', userData });
-      } else {
-        res.json({ message: 'Cannot find friends or not deleted', userData });
-      }
+      // if (deleted) {
+      //   res.json({ message: 'Successfully deleted friend!', userData });
+      // } else {
+      //   res.json({ message: 'Cannot find friends or not deleted', userData });
+      // }
+      res.json({ message: 'Deleted friend for thid Id!' });
     } catch (err) {
       res.status(500).json(err);
     }
